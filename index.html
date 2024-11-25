@@ -9,20 +9,17 @@
     body {
       margin: 0;
       padding: 0;
-      overflow: hidden;  /* 페이지 밖으로 스크롤이 나가지 않도록 설정 */
+      overflow: hidden;
     }
     canvas {
-      display: block;  /* 캔버스가 화면에 꽉 차도록 설정 */
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- 제목 부분을 제거했습니다. -->
-
   <canvas id="processing-canvas"></canvas>
 
-  <!-- Processing 코드 -->
   <script type="application/processing" data-processing-target="processing-canvas">
     int frameNum = 22;
     PImage[] img = new PImage[frameNum];
@@ -30,40 +27,32 @@
     int count = 0;
 
     void setup() {
-      size(914, 463);  // 캔버스 크기 설정
-      background(#FF8614);  // 배경 색상 변경 (주황색)
+      size(914, 463);
+      background(#FF8614);
       
-      // 이미지를 로드하고, 크기를 랜덤하게 설정
       for (int i = 0; i < frameNum; i++) {
-        // GitHub에서 로드할 수 있도록 raw URL 경로 설정
         img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png");
         
-        // 이미지를 랜덤 크기로 리사이즈 (최소 크기 100, 최대 크기 200)
-        int newWidth = int(random(100, 200));  // 최소 크기를 100으로 설정
-        int newHeight = int(random(100, 200));  // 최소 크기를 100으로 설정
+        int newWidth = int(random(100, 200));
+        int newHeight = int(random(100, 200));
         img[i].resize(newWidth, newHeight);  
       }
-    } // setup() 끝
+    }
 
     void draw() {
-      // draw 함수는 빈 상태로 두었으므로 특별히 필요한 경우 추가
-    } // draw() 끝
+      // 빈 상태로 두기
+    }
 
     void mousePressed() {
-      frame = int(random(frameNum));  // 인덱스를 frameNum 범위 내로 제한
+      frame = int(random(frameNum));
       
-      // 이미지 크기를 랜덤하게 조정
-      scale(random(0.1, 1.5));  // 이미지 크기를 10% ~ 150% 사이로 랜덤하게 설정
+      scale(random(0.1, 1.5));
+      rotate(random(TWO_PI));
       
-      // 이미지 회전 추가
-      rotate(random(TWO_PI)); 
-      
-      // 이미지 필터 추가 (랜덤 필터 적용)
       if (frame < 4) { 
         img[frame].filter(GRAY);
       } else if (frame < 10) {
-        // 반전 효과를 삭제
-        // img[frame].filter(INVERT);  // 반전 효과 제거
+        // 필터 없이 진행
       } else if (frame < 15) {
         img[frame].filter(THRESHOLD, 0.5);
       } else if (frame < 20) {
@@ -72,34 +61,29 @@
         img[frame].filter(POSTERIZE, 4);
       }
 
-      // 이미지 중심에 배치, 클릭한 위치에 정확히 생성
       imageMode(CENTER);
-      image(img[frame], mouseX, mouseY);  // 마우스 위치에 이미지 그리기
+      image(img[frame], mouseX, mouseY);
       
       println(frame);
-    } // mousePressed() 끝
+    }
 
     void keyPressed() {
-      // 'r' 키를 눌러서 이미지를 다시 로드하고 리사이즈
       if (key == 'r') {
-        background(#FF8614);  // 배경 색상 변경 (주황색)
+        background(#FF8614);
         for (int i = 0; i < frameNum; i++) {
-          // GitHub에서 로드할 수 있도록 raw URL 경로 설정
-          img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png"); 
+          img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png");
           
-          // 이미지를 랜덤 크기로 리사이즈 (최소 크기 100, 최대 크기 200)
-          int newWidth = int(random(100, 200));  // 최소 크기를 100으로 설정
-          int newHeight = int(random(100, 200));  // 최소 크기를 100으로 설정
-          img[i].resize(newWidth, newHeight);  // 이미지 리사이즈
+          int newWidth = int(random(100, 200));
+          int newHeight = int(random(100, 200));
+          img[i].resize(newWidth, newHeight);
         }
       }
       
-      // 's' 키를 눌러서 이미지를 저장
       if (key == 's') {
         saveFrame("image" + nf(count, 3) + ".jpg");
         count += 1;
       }
-    } // keyPressed() 끝
+    }
   </script>
 </body>
 </html>
