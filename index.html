@@ -4,78 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Art</title>
-  <!-- Processing.js 라이브러리 로드 -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;  /* 스크롤을 방지 */
-    }
-    canvas {
-      display: block;  /* 화면에 꽉 차도록 설정 */
-    }
-  </style>
 </head>
 <body>
+  <h1>Interactive Art on Redymac</h1>
 
-  <canvas id="processing-canvas"></canvas> <!-- Canvas 지정 -->
+  <canvas id="processing-canvas"></canvas>
 
-  <!-- Processing 코드 -->
   <script type="application/processing" data-processing-target="processing-canvas">
+    // 최종 코드: Processing.js를 사용하여 인터랙티브 아트 구현
+
     int frameNum = 22;
     PImage[] img = new PImage[frameNum];
     int frame = 0;
     int count = 0;
 
     void setup() {
-      size(windowWidth, windowHeight);  // 브라우저 창 크기에 맞게 캔버스 크기 설정
+      size(914, 463);  // 캔버스 크기 설정
       background(#FF8614);  // 배경 색상 설정 (주황색)
       
       // 이미지를 로드하고 크기를 적당히 설정
       for (int i = 0; i < frameNum; i++) {
-        img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png");  // raw URL 사용
+        img[i] = loadImage("data/img" + nf(i, 2) + ".png");  // 이미지 로드
         
-        int newWidth = int(random(100, 200));  // 이미지 크기 랜덤 설정
-        int newHeight = int(random(100, 200));
+        // 이미지를 리사이즈 (크기를 적당히 줄이기, 예시: 1.5배 축소)
+        int newWidth = img[i].width / 1.5;  // 크기 1.5배 축소
+        int newHeight = img[i].height / 1.5;
         img[i].resize(newWidth, newHeight);  // 리사이즈
       }
     }
 
     void draw() {
-      // 아무것도 그리지 않음 (빈 상태)
+      // draw 함수는 빈 상태로 두었으므로 특별히 필요한 경우 추가
     }
 
     void mousePressed() {
-      frame = int(random(frameNum));  // 프레임 번호 랜덤으로 선택
-
-      scale(random(0.1, 1.5));  // 이미지 크기 랜덤
-      rotate(random(TWO_PI));   // 이미지 회전
-
-      // 필터 적용: 각 범위에 맞는 필터를 적용
-      if (frame < 4) {
-        img[frame].filter(GRAY);  // 그레이 필터
+      frame = int(random(frameNum));  // 인덱스를 frameNum 범위 내로 제한
+      
+      // 마우스 클릭 위치로 이동
+      translate(mouseX, mouseY); 
+      
+      // 이미지 크기를 랜덤하게 조정
+      scale(random(0.1, 1.5));  // 이미지 크기를 10% ~ 150% 사이로 랜덤하게 설정
+      
+      // 이미지 회전 추가
+      rotate(random(TWO_PI)); 
+      
+      // 이미지 필터 추가 (랜덤 필터 적용)
+      if (frame < 4) { 
+        img[frame].filter(GRAY);
       } else if (frame < 10) {
-        // 필터 없이 진행
+        // 반전 효과를 삭제
       } else if (frame < 15) {
-        img[frame].filter(THRESHOLD, 0.5);  // Threshold 필터
+        img[frame].filter(THRESHOLD, 0.5);
       } else if (frame < 20) {
-        img[frame].filter(BLUR, 1);  // 블러 필터
+        img[frame].filter(BLUR, 1);
       } else {
-        img[frame].filter(POSTERIZE, 4);  // 포스터라이즈 필터
+        img[frame].filter(POSTERIZE, 4);
       }
 
-      // 이미지 위치를 클릭된 마우스 좌표로 설정
+      // 이미지 중심에 배치
       imageMode(CENTER);
-      image(img[frame], mouseX, mouseY);  // 마우스 클릭 위치에 이미지 그리기
-      println(frame);  // 현재 이미지 번호 출력
+      image(img[frame], 0, 0);  // 이미지 그리기
+      println(frame);
     }
 
-    // 창 크기 변경 시 캔버스 크기 업데이트
-    void windowResized() {
-      resizeCanvas(windowWidth, windowHeight);  // 창 크기 변경 시 캔버스 크기 변경
+    void keyPressed() {
+      // 'r' 키를 눌러서 이미지를 다시 로드하고 리사이즈
+      if (key == 'r') {
+        background(#FF8614);  // 배경 색상 변경 (주황색)
+        for (int i = 0; i < frameNum; i++) {
+          img[i] = loadImage("data/img" + nf(i, 2) + ".png"); 
+          
+          // 이미지를 랜덤 크기로 리사이즈 (최소 크기 100, 최대 크기 200)
+          int newWidth = img[i].width / 1.5;  // 크기를 1.5배 축소
+          int newHeight = img[i].height / 1.5;
+          img[i].resize(newWidth, newHeight);  // 이미지 리사이즈
+        }
+      }
+      
+      // 's' 키를 눌러서 이미지를 저장
+      if (key == 's') {
+        saveFrame("image" + nf(count, 3) + ".jpg");
+        count += 1;
+      }
     }
-
   </script>
 </body>
 </html>
