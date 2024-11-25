@@ -5,54 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Art</title>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-    }
-  </style>
 </head>
 <body>
+ 
 
   <canvas id="processing-canvas"></canvas>
 
   <script type="application/processing" data-processing-target="processing-canvas">
+    // 최종 코드: Processing.js를 사용하여 인터랙티브 아트 구현
+
     int frameNum = 22;
     PImage[] img = new PImage[frameNum];
     int frame = 0;
     int count = 0;
 
     void setup() {
-      size(914, 463);
-      background(#FF8614);
+      size(914, 463);  // 캔버스 크기 설정
+      background(#FF8614);  // 배경 색상 설정 (주황색)
       
+      // 이미지를 로드하고 크기를 적당히 설정
       for (int i = 0; i < frameNum; i++) {
-        img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png");
+        img[i] = loadImage("data/img" + nf(i, 2) + ".png");  // 이미지 로드
         
-        int newWidth = int(random(100, 200));
-        int newHeight = int(random(100, 200));
-        img[i].resize(newWidth, newHeight);  
+        // 이미지를 리사이즈 (크기를 적당히 줄이기, 예시: 1.5배 축소)
+        int newWidth = img[i].width / 1.5;  // 크기 1.5배 축소
+        int newHeight = img[i].height / 1.5;
+        img[i].resize(newWidth, newHeight);  // 리사이즈
       }
     }
 
     void draw() {
-      // 빈 상태로 두기
+      // draw 함수는 빈 상태로 두었으므로 특별히 필요한 경우 추가
     }
 
     void mousePressed() {
-      frame = int(random(frameNum));
+      frame = int(random(frameNum));  // 인덱스를 frameNum 범위 내로 제한
       
-      scale(random(0.1, 1.5));
-      rotate(random(TWO_PI));
+      // 마우스 클릭 위치로 이동
+      translate(mouseX, mouseY); 
       
+      // 이미지 크기를 랜덤하게 조정
+      scale(random(0.1, 1.5));  // 이미지 크기를 10% ~ 150% 사이로 랜덤하게 설정
+      
+      // 이미지 회전 추가
+      rotate(random(TWO_PI)); 
+      
+      // 이미지 필터 추가 (랜덤 필터 적용)
       if (frame < 4) { 
         img[frame].filter(GRAY);
       } else if (frame < 10) {
-        // 필터 없이 진행
+        // 반전 효과를 삭제
       } else if (frame < 15) {
         img[frame].filter(THRESHOLD, 0.5);
       } else if (frame < 20) {
@@ -61,24 +63,27 @@
         img[frame].filter(POSTERIZE, 4);
       }
 
+      // 이미지 중심에 배치
       imageMode(CENTER);
-      image(img[frame], mouseX, mouseY);
-      
+      image(img[frame], 0, 0);  // 이미지 그리기
       println(frame);
     }
 
     void keyPressed() {
+      // 'r' 키를 눌러서 이미지를 다시 로드하고 리사이즈
       if (key == 'r') {
-        background(#FF8614);
+        background(#FF8614);  // 배경 색상 변경 (주황색)
         for (int i = 0; i < frameNum; i++) {
-          img[i] = loadImage("https://raw.githubusercontent.com/jiyeonjeon123/potato/main/data/img" + nf(i, 2) + ".png");
+          img[i] = loadImage("data/img" + nf(i, 2) + ".png"); 
           
-          int newWidth = int(random(100, 200));
-          int newHeight = int(random(100, 200));
-          img[i].resize(newWidth, newHeight);
+          // 이미지를 랜덤 크기로 리사이즈 (최소 크기 100, 최대 크기 200)
+          int newWidth = img[i].width / 1.5;  // 크기를 1.5배 축소
+          int newHeight = img[i].height / 1.5;
+          img[i].resize(newWidth, newHeight);  // 이미지 리사이즈
         }
       }
       
+      // 's' 키를 눌러서 이미지를 저장
       if (key == 's') {
         saveFrame("image" + nf(count, 3) + ".jpg");
         count += 1;
