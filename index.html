@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Art</title>
-  <!-- Processing.js 라이브러리 포함 -->
+  <!-- Processing.js 라이브러리 로드 -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
   <style>
     body {
       margin: 0;
       padding: 0;
-   
+      overflow: hidden;  /* 스크롤을 방지 */
     }
     canvas {
       display: block;  /* 화면에 꽉 차도록 설정 */
@@ -18,6 +18,8 @@
   </style>
 </head>
 <body>
+
+  <h1>Interactive Art on Redymac</h1>
 
   <canvas id="processing-canvas"></canvas> <!-- Canvas 지정 -->
 
@@ -29,7 +31,8 @@
     int count = 0;
 
     void setup() {
-      size(2000, 3000);
+      // 브라우저 창 크기에 맞게 캔버스 크기 설정
+      size(windowWidth, windowHeight);  
       background(#FF8614);  // 배경 색상 설정 (주황색)
       
       // 이미지를 로드하고 크기를 적당히 설정
@@ -68,8 +71,6 @@
       image(img[frame], mouseX, mouseY);  // 마우스 클릭 위치에 이미지 그리기
       println(frame);  // 현재 이미지 번호 출력
     }
-
-   
   </script>
 </body>
 </html>
