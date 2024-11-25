@@ -5,50 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interactive Art</title>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.8/processing.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;  /* 페이지 밖으로 스크롤이 나가지 않도록 설정 */
+    }
+    #processing-canvas {
+      display: block;  /* 캔버스를 블록 요소로 만들어 화면 크기에 맞게 설정 */
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- 제목 부분을 제거했습니다. -->
 
   <canvas id="processing-canvas"></canvas>
 
   <script type="application/processing" data-processing-target="processing-canvas">
-    // 최종 코드: Processing.js를 사용하여 인터랙티브 아트 구현
-
     int frameNum = 22;
     PImage[] img = new PImage[frameNum];
     int frame = 0;
     int count = 0;
 
     void setup() {
-      size(914, 463);  // 캔버스 크기 설정
+      size(windowWidth, windowHeight);  // 화면 크기를 전체 창에 맞게 설정
       background(#FF8614);  // 배경 색상 설정 (주황색)
-      
+
       // 이미지를 로드하고 크기를 적당히 설정
       for (int i = 0; i < frameNum; i++) {
         img[i] = loadImage("data/img" + nf(i, 2) + ".png");  // 이미지 로드
-        
-        // 이미지를 리사이즈 (크기를 적당히 줄이기, 예시: 1.5배 축소)
-        int newWidth = img[i].width / 1.5;  // 크기 1.5배 축소
-        int newHeight = img[i].height / 1.5;
+
+        // 이미지를 리사이즈 (크기를 적당히 줄이기)
+        int newWidth = img[i].width / 2;  // 크기 2배 축소
+        int newHeight = img[i].height / 2;
         img[i].resize(newWidth, newHeight);  // 리사이즈
       }
     }
 
     void draw() {
-      // draw 함수는 빈 상태로 두었으므로 특별히 필요한 경우 추가
+      // 아무것도 그리지 않도록 남겨두었음
     }
 
     void mousePressed() {
-      frame = int(random(frameNum));  // 인덱스를 frameNum 범위 내로 제한
-      
+      // 클릭시 이미지가 여러 개 생성되도록 수정
+      frame = int(random(frameNum));  // 랜덤하게 인덱스를 선택
+
       // 마우스 클릭 위치로 이동
       translate(mouseX, mouseY); 
-      
-      // 이미지 크기를 랜덤하게 조정
-      scale(random(0.1, 1.5));  // 이미지 크기를 10% ~ 150% 사이로 랜덤하게 설정
-      
+
+      // 이미지 크기 랜덤하게 조정
+      scale(random(0.5, 1.0));  // 크기를 50% ~ 100% 사이로 설정
+
       // 이미지 회전 추가
       rotate(random(TWO_PI)); 
-      
+
       // 이미지 필터 추가 (랜덤 필터 적용)
       if (frame < 4) { 
         img[frame].filter(GRAY);
@@ -75,9 +87,9 @@
         for (int i = 0; i < frameNum; i++) {
           img[i] = loadImage("data/img" + nf(i, 2) + ".png"); 
           
-          // 이미지를 랜덤 크기로 리사이즈 (최소 크기 100, 최대 크기 200)
-          int newWidth = img[i].width / 1.5;  // 크기를 1.5배 축소
-          int newHeight = img[i].height / 1.5;
+          // 이미지를 랜덤 크기로 리사이즈
+          int newWidth = img[i].width / 2;  // 크기 2배 축소
+          int newHeight = img[i].height / 2;
           img[i].resize(newWidth, newHeight);  // 이미지 리사이즈
         }
       }
